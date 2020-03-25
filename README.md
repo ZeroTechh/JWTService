@@ -6,3 +6,16 @@ A Velocity Service Which Will Handle JWTs
 - Ability to create new access and refresh token based on a refresh token
 - Ability to validate all types of token
 - (fresh access tokens are very short lived non refreshable tokens used for important functions such as changing passwords)
+
+## Claims Struct
+```go
+type Claims struct {
+	UserIdentity  string   `json:"UserIdentity"`
+	IsFresh       bool     `json:"IsFresh"`
+	IsRefresh     bool     `json:"IsRefresh"`
+	Scopes        []string `json:"Scopes"`
+	CreationUTC   int64    `json:"CreationUTC"`
+	ExpirationUTC int64    `json:"ExpirationUTC"`
+	jwt.StandardClaims
+}
+```
