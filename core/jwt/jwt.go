@@ -10,7 +10,7 @@ import (
 
 // Loading the configs
 var (
-	config      = hades.GetConfig("main.yaml", []string{"../config", "config"})
+	config      = hades.GetConfig("main.yaml", []string{"../../config", "config"})
 	expirations = config.Map("token").Map("expirationMinutes")
 	secret      = []byte(config.Map("JWT").Str("secret"))
 	messages    = config.Map("messages")
