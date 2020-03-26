@@ -1,26 +1,12 @@
-package handler
+package serviceHandler
 
 import (
 	"context"
 	"testing"
 
-	proto "github.com/ZeroTechh/VelocityCentral/proto/JWTService"
+	proto "github.com/ZeroTechh/VelocityCore/proto/JWTService"
 	"github.com/stretchr/testify/assert"
 )
-
-/*
-func TestPanicHandler(t *testing.T) {
-	assert := assert.New(t)
-	defer func() {
-		if r := recover(); r != nil {
-			assert.True(true)
-		}
-	}()
-
-	log, _ := zap.NewDevelopment()
-	funcLog := blaze.NewFuncLog("test", log)
-	panicHandlerFunc("test", funcLog)
-}*/
 
 func TestHandler(t *testing.T) {
 	assert := assert.New(t)

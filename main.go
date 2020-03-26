@@ -3,23 +3,24 @@ package main
 import (
 	"go.uber.org/zap"
 
-	"github.com/ZeroTechh/VelocityCentral/logger"
-	proto "github.com/ZeroTechh/VelocityCentral/proto/JWTService"
-	"github.com/ZeroTechh/VelocityCentral/services"
-	"github.com/ZeroTechh/VelocityCentral/utils"
+	"github.com/ZeroTechh/VelocityCore/logger"
+	proto "github.com/ZeroTechh/VelocityCore/proto/JWTService"
+	"github.com/ZeroTechh/VelocityCore/services"
+	"github.com/ZeroTechh/VelocityCore/utils"
 	"github.com/ZeroTechh/hades"
 
-	"github.com/ZeroTechh/JWTService/handler"
+	"github.com/ZeroTechh/JWTService/serviceHandler"
 )
 
-var config = hades.GetConfig("main.yaml", []string{"config"})
-var log = logger.GetLogger(
-	config.Map("service").Str("logFile"),
-	config.Map("service").Bool("debug"),
+var (
+	config = hades.GetConfig("main.yaml", []string{"config"})
+	log    = logger.GetLogger(
+		config.Map("service").Str("logFile"),
+		config.Map("service").Bool("debug"),
+	)
 )
 
 func main() {
-
 	defer utils.HandlePanic(log)
 
 	grpcServer, listner := utils.CreateGRPCServer(
@@ -27,11 +28,12 @@ func main() {
 		log,
 	)
 
-	serviceHandler := handler.Handler{}
+	serviceHandler := serviceHandler.Handler{}
 	serviceHandler.Init()
 
 	proto.RegisterJWTServer(grpcServer, serviceHandler)
 
+	log.Info("Service Started")
 	if err := grpcServer.Serve(*listner); err != nil {
 		log.Fatal("Service Failed With Error", zap.Error(err))
 	}
