@@ -22,6 +22,7 @@ var (
 
 func main() {
 	defer utils.HandlePanic(log)
+	defer log.Info("Service Stopped")
 
 	grpcServer, listner := utils.CreateGRPCServer(
 		services.JWTService,
