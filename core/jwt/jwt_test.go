@@ -100,7 +100,7 @@ func TestJWT(t *testing.T) {
 	assert.NoError(err, "RefreshTokens Returned Error")
 
 	// Checking If RefreshTokens Can Detect Invalid Token
-	accessToken, refreshToken, msg, err = jwt.RefreshTokens("invalidToken")
+	_, _, msg, err = jwt.RefreshTokens("invalidToken")
 	assert.Zero(msg)
 	assert.Error(err)
 
@@ -114,18 +114,6 @@ func TestJWT(t *testing.T) {
 		t,
 	)
 
-	/*
-		accessToken, refreshToken, msg, err = jwt.RefreshTokens("InvalidToken")
-		assert.Error(err)
-		assert.Zero(accessToken)
-		assert.Zero(refreshToken)
-		assert.Zero(msg)
-	*/
-
-	/*
-		This should be invalid as we are passing accessToken
-		to jwt.RefreshTokens which accepts refresh token, not access token
-	*/
 	accessToken, _ = jwt.AccessAndRefreshTokens("test", nil)
 	accessToken, refreshToken, msg, err = jwt.RefreshTokens(accessToken)
 	assert.NoError(err)
