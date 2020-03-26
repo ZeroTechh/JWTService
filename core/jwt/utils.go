@@ -12,8 +12,15 @@ func makeClaims(
 	userIdentity string,
 	scopes []string,
 	isFresh bool,
-	isRefresh bool,
-	expiration time.Duration) Claims {
+	isRefresh bool) Claims {
+	typeName := "access"
+	if isFresh {
+		typeName = "fresh"
+	} else if isRefresh {
+		typeName = "refresh"
+	}
+
+	expiration := time.Duration(expirations.Int(typeName)) * time.Minute
 	currentTime := time.Now()
 	expirationTime := currentTime.Add(expiration)
 
@@ -34,7 +41,6 @@ func freshTokenClaims(userIdentity string) Claims {
 		nil,
 		true,
 		false,
-		time.Duration(expirations.Int("fresh"))*time.Minute,
 	)
 }
 
@@ -45,7 +51,6 @@ func accessTokenClaims(userIdentity string, scopes []string) Claims {
 		scopes,
 		false,
 		false,
-		time.Duration(expirations.Int("access"))*time.Minute,
 	)
 }
 
@@ -56,7 +61,6 @@ func refreshTokenClaims(userIdentity string, scopes []string) Claims {
 		scopes,
 		false,
 		true,
-		time.Duration(expirations.Int("refresh"))*time.Minute,
 	)
 }
 
