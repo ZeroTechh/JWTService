@@ -5,6 +5,7 @@ import (
 
 	"github.com/ZeroTechh/VelocityCentral/logger"
 	proto "github.com/ZeroTechh/VelocityCentral/proto/JWTService"
+	"github.com/ZeroTechh/VelocityCentral/utils"
 	"github.com/ZeroTechh/blaze"
 	"github.com/ZeroTechh/hades"
 	"github.com/jinzhu/copier"
@@ -21,22 +22,14 @@ var (
 	)
 )
 
-// to be executed when panic occurs
-func panicHandlerFunc(msg interface{}, data ...interface{}) {
-	funcLog := data[0].(*blaze.FuncLog)
-	funcLog.Panic(msg)
-}
-
 // Handler is used to handle all jwt service functions
 type Handler struct {
-	jwt          jwt.JWT
-	panicHandler *blaze.PanicHandler
+	jwt jwt.JWT
 }
 
 // Init is used to initialize
 func (handler *Handler) Init() {
 	handler.jwt = jwt.JWT{}
-	handler.panicHandler = blaze.NewPanicHandler(panicHandlerFunc)
 }
 
 // FreshToken is used to generate fresh token
@@ -49,7 +42,7 @@ func (handler Handler) FreshToken(
 		zap.String("ID", request.UserIdentity),
 	)
 
-	defer handler.panicHandler.Check(funcLog)
+	defer utils.HandlePanic(funcLog)
 	funcLog.Started()
 	token := handler.jwt.FreshToken(request.UserIdentity)
 	funcLog.Completed(zap.String("Token", token))
@@ -67,7 +60,7 @@ func (handler Handler) AccessAndRefreshTokens(
 		zap.String("ID", request.UserIdentity),
 		zap.Strings("Scopes", request.Scopes),
 	)
-	defer handler.panicHandler.Check(funcLog)
+	defer utils.HandlePanic(funcLog)
 	funcLog.Started()
 
 	access, refresh := handler.jwt.AccessAndRefreshTokens(
@@ -95,7 +88,7 @@ func (handler Handler) RefreshTokens(
 		log,
 		zap.String("Token", request.Token),
 	)
-	defer handler.panicHandler.Check(funcLog)
+	defer utils.HandlePanic(funcLog)
 	funcLog.Started()
 
 	accessToken, refreshToken, msg, err := handler.jwt.RefreshTokens(
@@ -128,7 +121,7 @@ func (handler Handler) ValidateToken(
 		log,
 		zap.String("Token", request.Token),
 	)
-	defer handler.panicHandler.Check(funcLog)
+	defer utils.HandlePanic(funcLog)
 	funcLog.Started()
 
 	valid, claims, msg, err := handler.jwt.ValidateToken(request.Token)
