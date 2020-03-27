@@ -62,8 +62,7 @@ func TestHandler(t *testing.T) {
 	)
 	assert.NoError(err)
 	assert.True(claims.Valid)
-	assert.True(claims.IsRefresh)
-	assert.False(claims.IsFresh)
+	assert.Equal(claims.TokenType, "refresh")
 
 	// Checking If ValidateToken Can Detect Invalid Token
 	claims, err = handler.ValidateToken(

@@ -54,7 +54,7 @@ func (jwt JWT) RefreshTokens(refreshTokenString string) (string, string, string,
 	if err != nil {
 		err = errors.Wrap(err, "Error While Validating Refresh Token")
 		return "", "", "", err
-	} else if !valid || !claims.IsRefresh {
+	} else if !valid || claims.TokenType != typeRefresh {
 		return "", "", messages.Str("invalidToken"), nil
 	}
 

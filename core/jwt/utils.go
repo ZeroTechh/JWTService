@@ -7,27 +7,24 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+var (
+	typeAccess  = "access"
+	typeFresh   = "fresh"
+	typeRefresh = "refresh"
+)
+
 // makeClaims is used to generate claims for a token
 func makeClaims(
 	userIdentity string,
 	scopes []string,
-	isFresh bool,
-	isRefresh bool) Claims {
-	typeName := "access"
-	if isFresh {
-		typeName = "fresh"
-	} else if isRefresh {
-		typeName = "refresh"
-	}
-
-	expiration := time.Duration(expirations.Int(typeName)) * time.Minute
+	tokenType string) Claims {
+	expiration := time.Duration(expirations.Int(tokenType)) * time.Minute
 	currentTime := time.Now()
 	expirationTime := currentTime.Add(expiration)
 
 	return Claims{
 		UserIdentity:  userIdentity,
-		IsFresh:       isFresh,
-		IsRefresh:     isRefresh,
+		TokenType:     tokenType,
 		Scopes:        scopes,
 		CreationUTC:   currentTime.Unix(),
 		ExpirationUTC: expirationTime.Unix(),
@@ -39,8 +36,7 @@ func freshTokenClaims(userIdentity string) Claims {
 	return makeClaims(
 		userIdentity,
 		nil,
-		true,
-		false,
+		typeFresh,
 	)
 }
 
@@ -49,8 +45,7 @@ func accessTokenClaims(userIdentity string, scopes []string) Claims {
 	return makeClaims(
 		userIdentity,
 		scopes,
-		false,
-		false,
+		typeAccess,
 	)
 }
 
@@ -59,8 +54,7 @@ func refreshTokenClaims(userIdentity string, scopes []string) Claims {
 	return makeClaims(
 		userIdentity,
 		scopes,
-		false,
-		true,
+		typeRefresh,
 	)
 }
 

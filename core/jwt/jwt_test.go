@@ -71,16 +71,13 @@ func TestClaimsGen(t *testing.T) {
 	id := "testing"
 
 	accessClaims := accessTokenClaims(id, scopes)
-	assert.True(!accessClaims.IsFresh && !accessClaims.IsRefresh,
-		"Access token claims should neither be isFresh Nor IsRefresh")
+	assert.Equal(accessClaims.TokenType, typeAccess)
 
 	refreshClaims := refreshTokenClaims(id, scopes)
-	assert.True(refreshClaims.IsRefresh && !refreshClaims.IsFresh,
-		"Refresh Claims Should Be IsRefresh")
+	assert.Equal(refreshClaims.TokenType, typeRefresh)
 
 	freshClaims := freshTokenClaims(id)
-	assert.True(freshClaims.IsFresh && !freshClaims.IsRefresh,
-		"Fresh Claims Should Be IsRefresh")
+	assert.Equal(freshClaims.TokenType, typeFresh)
 }
 
 func TestJWT(t *testing.T) {
@@ -96,8 +93,8 @@ func TestJWT(t *testing.T) {
 	// Testing Refreshing Of Token
 	accessToken, refreshToken, msg, err := jwt.RefreshTokens(refreshToken)
 	testAccessAndRefresh(accessToken, refreshToken, id, scopes, t)
-	assert.Zero(msg, "Message should be blank")
-	assert.NoError(err, "RefreshTokens Returned Error")
+	assert.Zero(msg)
+	assert.NoError(err)
 
 	// Checking If RefreshTokens Can Detect Invalid Token
 	_, _, msg, err = jwt.RefreshTokens("invalidToken")
@@ -110,7 +107,7 @@ func TestJWT(t *testing.T) {
 		fresh,
 		id,
 		nil,
-		time.Duration(expirations.Int("fresh"))*time.Minute,
+		time.Duration(expirations.Int(typeFresh))*time.Minute,
 		t,
 	)
 

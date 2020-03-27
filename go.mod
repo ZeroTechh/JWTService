@@ -3,7 +3,7 @@ module github.com/ZeroTechh/JWTService
 go 1.13
 
 require (
-	github.com/ZeroTechh/VelocityCore v0.0.6
+	github.com/ZeroTechh/VelocityCore v0.0.7
 	github.com/ZeroTechh/blaze v0.1.6
 	github.com/ZeroTechh/hades v0.1.9
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
